@@ -6,13 +6,13 @@ const os = require('os');
 exports.pre = () => {
   try {
     if (os.platform() === 'win32') {
-      execSync('where poetry')
+      execSync('where pipenv')
     }
     else {
-      execSync('which poetry')
+      execSync('which pipenv')
     }
   } catch {
-    console.error(`Unable to find "poetry". Install from https://python-poetry.org/docs/#installation`)
+    console.error(`Unable to find "pipenv". Follow the instructions from https://pipenv.pypa.io/`)
     process.exit(1);
   }
 };
@@ -31,6 +31,7 @@ exports.post = options => {
 
   execSync('poetry install', { stdio: 'inherit' });
   execSync(`poetry add ${pypi_cdktf}`, { stdio: 'inherit' });
+  execSync(`poetry add pytest --group dev`, { stdio: 'inherit' });
   chmodSync('main.py', '700');
 
   console.log(readFileSync('./help', 'utf-8'));
@@ -40,13 +41,13 @@ function terraformCloudConfig(baseName, organizationName, workspaceName) {
   template = readFileSync('./main.py', 'utf-8');
 
   const templateWithImports = template.replace(`from cdktf import App, TerraformStack`,
-    `from cdktf import App, TerraformStack, RemoteBackend, NamedRemoteWorkspace`)
+    `from cdktf import App, TerraformStack, CloudBackend, NamedCloudWorkspace`)
 
   const result = templateWithImports.replace(`MyStack(app, "${baseName}")`, `stack = MyStack(app, "${baseName}")
-RemoteBackend(stack,
+CloudBackend(stack,
   hostname='app.terraform.io',
   organization='${organizationName}',
-  workspaces=NamedRemoteWorkspace('${workspaceName}')
+  workspaces=NamedCloudWorkspace('${workspaceName}')
 )`);
 
   writeFileSync('./main.py', result, 'utf-8');
