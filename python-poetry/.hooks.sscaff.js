@@ -6,13 +6,13 @@ const os = require('os');
 exports.pre = () => {
   try {
     if (os.platform() === 'win32') {
-      execSync('where pipenv')
+      execSync('where poetry')
     }
     else {
-      execSync('which pipenv')
+      execSync('which poetry')
     }
   } catch {
-    console.error(`Unable to find "pipenv". Follow the instructions from https://pipenv.pypa.io/`)
+    console.error(`Unable to find "poetry". Install from https://python-poetry.org/docs/#installation`)
     process.exit(1);
   }
 };
