@@ -1,0 +1,13 @@
+[tool.poetry]
+name = "cdktf-python-poetry"
+version = "1.0.0"
+description = ""
+authors = []
+
+[tool.poetry.dependencies]
+python = "^3.10"
+cdktf = "^0.12.3"
+
+[build-system]
+requires = ["poetry-core>=1.2.1"]
+build-backend = "poetry.core.masonry.api"
